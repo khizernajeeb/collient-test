@@ -10,6 +10,10 @@ import {
   SEARCHABLE_TEAMS_INFO_SUCCESS,
   SEARCHABLE_PLAYERS_INFO_INIT,
   SEARCHABLE_PLAYERS_INFO_SUCCESS,
+  CHOOSE_CRICKET_CLIPS_INIT,
+  CHOOSE_CRICKET_CLIPS_SUCCESS,
+  CLIPS_INFO_INIT,
+  CLIPS_INFO_SUCCESS,
 } from '../actionTypes'
 import {
   getSource,
@@ -19,6 +23,8 @@ import {
   bowlerDataApi,
   searchableTeamsInfoApi,
   searchablePlayersInfoApi,
+  chooseCricketClipsApi,
+  clipsInfoApi,
 } from '../sources/apiCallsSources'
 
 export const getUserDetailSuccess = (users) => {
@@ -134,6 +140,52 @@ export const getSelectionInfo = (formData) => (dispatch) => {
   selectionInfoApi(formData)
     .then((res) => {
       dispatch(getSelectionInfoSuccess(res))
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
+export const getChooseCricketClipsInit = () => {
+  return {
+    type: CHOOSE_CRICKET_CLIPS_INIT,
+  }
+}
+
+export const getChooseCricketClipsSuccess = (chooseCricketClips) => {
+  return {
+    type: CHOOSE_CRICKET_CLIPS_SUCCESS,
+    chooseCricketClips,
+  }
+}
+export const getChooseCricketClips = (formData) => (dispatch) => {
+  dispatch(getChooseCricketClipsInit())
+  chooseCricketClipsApi(formData)
+    .then((res) => {
+      dispatch(getChooseCricketClipsSuccess(res))
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
+export const getClipsInfoInit = () => {
+  return {
+    type: CLIPS_INFO_INIT,
+  }
+}
+
+export const getClipsInfoSuccess = (clipsInfo) => {
+  return {
+    type: CLIPS_INFO_SUCCESS,
+    clipsInfo,
+  }
+}
+export const getClipsInfo = (formData) => (dispatch) => {
+  dispatch(getClipsInfoInit())
+  clipsInfoApi(formData)
+    .then((res) => {
+      dispatch(getClipsInfoSuccess(res))
     })
     .catch((err) => {
       console.log(err)

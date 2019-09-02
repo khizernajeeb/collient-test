@@ -6,6 +6,8 @@ import {
   selectionInfoURL,
   searchableTeamsURL,
   searchablePlayersURL,
+  chooseCricketClipsURL,
+  clipsInfoURL,
 } from '../../configs/urls'
 import { playersTypeRequestBody } from './requestBody'
 
@@ -40,7 +42,8 @@ export const playerDataApi = (formData) => {
           parseString(response.data, function(err, result) {
             result = result.Players.Player.map((value) => value.$)
 
-            resolve(_.sortBy(result, (o) => o.playerName))
+            // resolve(_.sortBy(result, (o) => o.playerName))
+            resolve(result)
           })
         }
       })
@@ -92,7 +95,7 @@ export const searchablePlayersInfoApi = (formData) => {
           parseString(response.data, function(err, result) {
             result = result.Players.Player.map((value) => value.$)
 
-            resolve(_.sortBy(result, (o) => o.playerName))
+            resolve(result)
           })
         }
       })
@@ -106,6 +109,45 @@ export const selectionInfoApi = (formData) => {
   return new Promise((resolve, reject) => {
     axios
       .post(selectionInfoURL, formData, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      })
+      .then((response) => {
+        if (response) {
+          resolve(response.data)
+        }
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
+
+export const chooseCricketClipsApi = (formData) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(chooseCricketClipsURL, formData, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      })
+      .then((response) => {
+        if (response) {
+          resolve(response.data)
+        }
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
+
+export const clipsInfoApi = (formData) => {
+  return new Promise((resolve, reject) => {
+    console.log(clipsInfoURL + formData)
+    axios
+      .post(clipsInfoURL + formData, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
@@ -164,32 +206,3 @@ export const bowlerDataApi = () => {
       })
   })
 }
-
-// function batsmenRequestBody() {
-//   var formData = new FormData();
-//   var arr = {
-//     _selectedSeriesIds: 'on',
-//     _selectedPlayerSeriesId: 'on',
-//     _wicketFell: 'on',
-//     _selectedPlayerTeamId: 'on',
-//     seriesId: 7,
-//     _selectedMatchIds: 'on',
-//     playerType: 'batsman',
-//     _deliveryTypes: 'on',
-//     _selectedBatsmanIds: 'on',
-//     _selectedBowlerIds: 'on',
-//     _strikerRunsScored: 'on',
-//     _selectedInningsIds: 'on',
-//     _seriesPlayerBowler: 'on',
-//     scopeRootId: 7,
-//     scopeType: 'SERIES',
-//     _seriesPlayerBatsman: 'on',
-//     _selectedBatsmanTeamIds: 'on',
-//     scopeId: 7,
-//     _selectedBowlerTeamIds: 'on',
-//   };
-//   for (let key in arr) {
-//     formData.append(key, arr[key]);
-//   }
-//   return formData;
-// }

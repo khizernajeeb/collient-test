@@ -1,37 +1,31 @@
 import React, { Component } from 'react'
-import { Divider, Modal, Row, Col, Spin, Button } from 'antd'
+import { Typography, Divider, Modal, Row, Col, Button } from 'antd'
 import ViewReelComponent from './ViewReelComponent'
+import Spinner from '../sharedComponents/Spinner'
+import CommentBox from '../sharedComponents/Comments/CommentBox'
+import ClipsComponent from './ClipsComponent'
+
+const { Title } = Typography
 
 class SelectionInfo extends Component {
   state = {
     visible: false,
   }
 
-  showModal = () => {
-    this.setState({
-      visible: true,
-    })
-  }
-
-  handleCancel = (e) => {
-    this.setState({
-      visible: false,
-    })
-  }
-
   render() {
-    const { visible } = this.state
-
     return (
       <div style={{ margin: '0px auto' }}>
         {this.props.selectionInfoLoading ? (
-          <Row type='flex' style={{ display: 'table', margin: '0px auto' }}>
-            <Spin />
-          </Row>
+          <Spinner />
         ) : this.props.selectionInfo ? (
           <div>
             <Row type='flex' align='middle'>
-              <Col span={20}> {this.props.selectionInfo.description}</Col>
+              <Col span={20}>
+                {' '}
+                {this.props.selectionInfo.description === 'Nothing'
+                  ? ''
+                  : this.props.selectionInfo.description}
+              </Col>
               <Col span={4}>
                 <span
                   style={{
@@ -49,7 +43,8 @@ class SelectionInfo extends Component {
                   {this.props.selectionInfo.numClips}
                 </span>
                 <Button
-                  onClick={this.showModal}
+                  disabled={this.props.selectionInfo.numClips === 0}
+                  onClick={this.props.showModal}
                   style={{ width: '100%', borderRadius: '0' }}
                   type='primary'
                 >
@@ -62,12 +57,30 @@ class SelectionInfo extends Component {
         ) : null}
 
         <Modal
-          visible={visible}
-          onCancel={this.handleCancel}
-          title='Title'
+          width={1020}
+          visible={this.props.visible}
+          onCancel={this.props.closeModal}
+          title='View your highlights'
           footer={[]}
         >
-          <ViewReelComponent />
+          <Row>
+            <Col span={12}>
+              <ViewReelComponent />
+            </Col>
+            <Col span={12}>
+              <Title level={4}>Comments</Title>{' '}
+              <div>
+                <CommentBox />
+              </div>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              {this.props.clipsInfo ? (
+                <ClipsComponent clipsInfo={this.props.clipsInfo} />
+              ) : null}
+            </Col>
+          </Row>
         </Modal>
       </div>
     )

@@ -69,6 +69,16 @@ export default function launchReducer(state = initialState, action) {
         selectionInfoLoading: false,
       })
     }
+    case types.CHOOSE_CRICKET_CLIPS_SUCCESS: {
+      return Object.assign({}, state, {
+        chooseCricketClips: action.chooseCricketClips,
+      })
+    }
+    case types.CLIPS_INFO_SUCCESS: {
+      return Object.assign({}, state, {
+        clipsInfo: action.clipsInfo,
+      })
+    }
     case types.BATSMEN_LIST_SUCCESS: {
       return Object.assign({}, state, {
         batsmen: action.batsmen,

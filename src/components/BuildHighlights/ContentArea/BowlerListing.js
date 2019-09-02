@@ -1,16 +1,79 @@
 import React, { Component } from 'react'
-import { Table } from 'antd'
-import { BOWLER } from '../../../configs/constants'
+import { Table, Button, Icon, Input } from 'antd'
+import Spinner from '../../sharedComponents/Spinner'
 
 class BowlerListing extends Component {
+  getColumnSearchProps = (dataIndex, name) => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+    }) => (
+      <div style={{ padding: 8 }}>
+        <Input
+          ref={(node) => {
+            this.searchInput = node
+          }}
+          placeholder={`Search ${name}`}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() => this.handleSearch(selectedKeys, confirm)}
+          style={{ width: 188, marginBottom: 8, display: 'block' }}
+        />
+        <Button
+          type='primary'
+          onClick={() => this.handleSearch(selectedKeys, confirm)}
+          icon='search'
+          size='small'
+          style={{ width: 90, marginRight: 8 }}
+        >
+          Search
+        </Button>
+        <Button
+          onClick={() => this.handleReset(clearFilters)}
+          size='small'
+          style={{ width: 90 }}
+        >
+          Reset
+        </Button>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <Icon type='search' style={{ color: filtered ? '#1890ff' : undefined }} />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex]
+        .toString()
+        .toLowerCase()
+        .includes(value.toLowerCase()),
+    onFilterDropdownVisibleChange: (visible) => {
+      if (visible) {
+        setTimeout(() => this.searchInput.select())
+      }
+    },
+  })
+
+  handleSearch = (selectedKeys, confirm) => {
+    confirm()
+    this.setState({ searchText: selectedKeys[0] })
+  }
+
+  handleReset = (clearFilters) => {
+    clearFilters()
+    this.setState({ searchText: '' })
+  }
+
   bowlerColumns = [
     {
       title: 'Player Name',
       dataIndex: 'playerName',
-      //   ...this.getColumnSearchProps('playerName', 'Player Name'),
+      ...this.getColumnSearchProps('playerName', 'Player Name'),
     },
     {
-      title: 'Browse By Type',
+      title: 'Player Type',
       dataIndex: 'bowler_arm',
       bowler_delivery_type: 'bowler_delivery_type',
       render: (dataIndex, record) => {
@@ -47,18 +110,13 @@ class BowlerListing extends Component {
       ],
       onFilter: (value, record) => {
         let rec = record.bowler_arm + record.bowler_delivery_type
-
-        console.log(rec.includes(value))
         return rec.includes(value)
       },
-
-      // ...this.getColumnSearchProps('bowler_arm', 'Bowler Arm'),
     },
 
     {
-      title: 'Browse By Team',
+      title: 'Team Name',
       dataIndex: 'teamName',
-      // ...this.getColumnSearchProps('teamName', 'Team Name'),
       filters: [
         { text: 'Mumbai Indians', value: 'Mumbai Indians' },
         { text: 'Deccan Chargers', value: 'Deccan Chargers' },
@@ -76,21 +134,10 @@ class BowlerListing extends Component {
     },
   ]
 
-  rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      if (this.props.eventName === BOWLER.toLowerCase()) {
-        this.props.setSelectedPlayers(this.props.eventName, selectedRows)
-      } else {
-        //   this.props.setSelectedBatsmen(selectedRows)
-      }
-    },
-
-    // getCheckboxProps: (record) => ({
-    //   checked: record.playerId == '478', // Column configuration not to be checked
-    // }),
-  }
   render() {
-    return (
+    return this.props.playersInfoLoading || this.props.isLoading ? (
+      <Spinner />
+    ) : (
       <Table
         rowSelection={this.props.rowSelection}
         columns={this.bowlerColumns}
@@ -98,8 +145,7 @@ class BowlerListing extends Component {
         // rowKey={`playerId`}
         rowKey={(record) => {
           if (!record.__uniqueId)
-            record.__uniqueId =
-              record.playerId + ' ' + record.teamId + ' ' + record.playerType
+            record.__uniqueId = record.playerType + '_' + record.playerId
           return record.__uniqueId
         }}
       />

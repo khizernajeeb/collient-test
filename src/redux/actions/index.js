@@ -6,6 +6,8 @@ import {
   getBowlerData,
   getSearchableTeamsInfo,
   getSearchablePlayersInfo,
+  getChooseCricketClips,
+  getClipsInfo,
 } from './userActions'
 
 export default {
@@ -16,4 +18,6 @@ export default {
   getBowlerData,
   getSearchableTeamsInfo,
   getSearchablePlayersInfo,
+  getChooseCricketClips,
+  getClipsInfo,
 }
