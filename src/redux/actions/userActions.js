@@ -14,7 +14,12 @@ import {
   CHOOSE_CRICKET_CLIPS_SUCCESS,
   CLIPS_INFO_INIT,
   CLIPS_INFO_SUCCESS,
-} from '../actionTypes'
+  ADD_CLIP_COMMENT_INIT,
+  ADD_CLIP_COMMENT_SUCCESS,
+  REEL_DETAILS_INIT,
+  REEL_DETAILS_SUCCESS,
+  ADD_RATING_SUCCESS,
+} from '../actionTypes';
 import {
   getSource,
   playerDataApi,
@@ -25,201 +30,267 @@ import {
   searchablePlayersInfoApi,
   chooseCricketClipsApi,
   clipsInfoApi,
-} from '../sources/apiCallsSources'
+  addClipCommentApi,
+  reelDetailsApi,
+  addRatingApi,
+} from '../sources/apiCallsSources';
 
 export const getUserDetailSuccess = (users) => {
   // console.log(users, 'action');
   return {
     type: USER_DETAIL_SUCCESS,
     users,
-  }
-}
+  };
+};
 export const getUserDetail = () => (dispatch) => {
   getSource()
     .then((res) => {
-      const { data } = res
-      dispatch(getUserDetailSuccess(data))
+      const { data } = res;
+      dispatch(getUserDetailSuccess(data));
     })
     .catch((err) => {
-      console.log(err)
-    })
-}
+      console.log(err);
+    });
+};
 
 export const getPlayerDataInit = () => {
   return {
     type: PLAYERS_LIST_INIT,
-  }
-}
+  };
+};
 
 export const getPlayerDataSuccess = (players) => {
   return {
     type: PLAYERS_LIST_SUCCESS,
     players,
-  }
-}
+  };
+};
 export const getPlayersData = (formData) => (dispatch) => {
   // for (var value of formData.values()) {
   //   console.log('action', value);
   // }
-  dispatch(getPlayerDataInit())
+  dispatch(getPlayerDataInit());
   playerDataApi(formData)
     .then((res) => {
-      dispatch(getPlayerDataSuccess(res))
+      dispatch(getPlayerDataSuccess(res));
     })
     .catch((err) => {
-      console.log(err)
-    })
-}
+      console.log(err);
+    });
+};
 
 export const getSearchableTeamsInfoInit = () => {
   return {
     type: SEARCHABLE_TEAMS_INFO_INIT,
-  }
-}
+  };
+};
 
 export const getSearchableTeamsInfoSuccess = (teamsInfo) => {
   return {
     type: SEARCHABLE_TEAMS_INFO_SUCCESS,
     teamsInfo,
-  }
-}
+  };
+};
 export const getSearchableTeamsInfo = (formData) => (dispatch) => {
   // for (var value of formData.values()) {
   //   console.log('action', value);
   // }
-  dispatch(getSearchableTeamsInfoInit())
+  dispatch(getSearchableTeamsInfoInit());
   searchableTeamsInfoApi(formData)
     .then((res) => {
-      dispatch(getSearchableTeamsInfoSuccess(res))
+      dispatch(getSearchableTeamsInfoSuccess(res));
     })
     .catch((err) => {
-      console.log(err)
-    })
-}
+      console.log(err);
+    });
+};
 
 export const getSearchablePlayersInfoInit = () => {
   return {
     type: SEARCHABLE_PLAYERS_INFO_INIT,
-  }
-}
+  };
+};
 
 export const getSearchablePlayersInfoSuccess = (playersInfo) => {
   return {
     type: SEARCHABLE_PLAYERS_INFO_SUCCESS,
     playersInfo,
-  }
-}
+  };
+};
 export const getSearchablePlayersInfo = (formData) => (dispatch) => {
   // for (var value of formData.values()) {
   //   console.log('action', value);
   // }
-  dispatch(getSearchablePlayersInfoInit())
+  dispatch(getSearchablePlayersInfoInit());
   searchablePlayersInfoApi(formData)
     .then((res) => {
-      dispatch(getSearchablePlayersInfoSuccess(res))
+      dispatch(getSearchablePlayersInfoSuccess(res));
     })
     .catch((err) => {
-      console.log(err)
-    })
-}
+      console.log(err);
+    });
+};
 
 export const getSelectionInfoInit = () => {
   return {
     type: SELECTION_INFO_INIT,
-  }
-}
+  };
+};
 
 export const getSelectionInfoSuccess = (selectionInfo) => {
   return {
     type: SELECTION_INFO_SUCCESS,
     selectionInfo,
-  }
-}
+  };
+};
 export const getSelectionInfo = (formData) => (dispatch) => {
-  dispatch(getSelectionInfoInit())
+  dispatch(getSelectionInfoInit());
   selectionInfoApi(formData)
     .then((res) => {
-      dispatch(getSelectionInfoSuccess(res))
+      dispatch(getSelectionInfoSuccess(res));
     })
     .catch((err) => {
-      console.log(err)
-    })
-}
+      console.log(err);
+    });
+};
 
 export const getChooseCricketClipsInit = () => {
   return {
     type: CHOOSE_CRICKET_CLIPS_INIT,
-  }
-}
+  };
+};
 
 export const getChooseCricketClipsSuccess = (chooseCricketClips) => {
   return {
     type: CHOOSE_CRICKET_CLIPS_SUCCESS,
     chooseCricketClips,
-  }
-}
+  };
+};
 export const getChooseCricketClips = (formData) => (dispatch) => {
-  dispatch(getChooseCricketClipsInit())
+  dispatch(getChooseCricketClipsInit());
   chooseCricketClipsApi(formData)
     .then((res) => {
-      dispatch(getChooseCricketClipsSuccess(res))
+      dispatch(getChooseCricketClipsSuccess(res));
     })
     .catch((err) => {
-      console.log(err)
-    })
-}
+      console.log(err);
+    });
+};
 
 export const getClipsInfoInit = () => {
   return {
     type: CLIPS_INFO_INIT,
-  }
-}
+  };
+};
 
 export const getClipsInfoSuccess = (clipsInfo) => {
   return {
     type: CLIPS_INFO_SUCCESS,
     clipsInfo,
-  }
-}
+  };
+};
 export const getClipsInfo = (formData) => (dispatch) => {
-  dispatch(getClipsInfoInit())
+  dispatch(getClipsInfoInit());
   clipsInfoApi(formData)
     .then((res) => {
-      dispatch(getClipsInfoSuccess(res))
+      dispatch(getClipsInfoSuccess(res));
     })
     .catch((err) => {
-      console.log(err)
+      console.log(err);
+    });
+};
+
+export const addClipCommentInit = () => {
+  return {
+    type: ADD_CLIP_COMMENT_INIT,
+  };
+};
+
+export const addClipCommentSuccess = (addClipComment) => {
+  return {
+    type: ADD_CLIP_COMMENT_SUCCESS,
+    addClipComment,
+  };
+};
+export const addClipComment = (formData) => (dispatch) => {
+  dispatch(addClipCommentInit());
+  addClipCommentApi(formData)
+    .then((res) => {
+      dispatch(addClipCommentSuccess(res));
     })
-}
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+export const getPublishedReelDetailsInit = () => {
+  return {
+    type: REEL_DETAILS_INIT,
+  };
+};
+
+export const getPublishedReelDetailsSuccess = (reelDetails) => {
+  return {
+    type: REEL_DETAILS_SUCCESS,
+    reelDetails,
+  };
+};
+export const getPublishedReelDetails = (formData) => (dispatch) => {
+  dispatch(getPublishedReelDetailsInit());
+  reelDetailsApi(formData)
+    .then((res) => {
+      dispatch(getPublishedReelDetailsSuccess(res));
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+export const addRatingSuccess = (getRating) => {
+  return {
+    type: ADD_RATING_SUCCESS,
+    getRating,
+  };
+};
+
+export const addRating = (formData) => (dispatch) => {
+  addRatingApi(formData)
+    .then((res) => {
+      dispatch(addRatingSuccess(res));
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 
 export const getBatsmenDataSuccess = (batsmen) => {
   return {
     type: BATSMEN_LIST_SUCCESS,
     batsmen,
-  }
-}
+  };
+};
 export const getBatsmenData = () => (dispatch) => {
   batsmenDataApi()
     .then((res) => {
       // console.log('dato', res);
-      dispatch(getBatsmenDataSuccess(res))
+      dispatch(getBatsmenDataSuccess(res));
     })
     .catch((err) => {
-      console.log(err)
-    })
-}
+      console.log(err);
+    });
+};
 export const getBowlerDataSuccess = (bowler) => {
   return {
     type: BOWLER_LIST_SUCCESS,
     bowler,
-  }
-}
+  };
+};
 export const getBowlerData = () => (dispatch) => {
   bowlerDataApi()
     .then((res) => {
-      dispatch(getBowlerDataSuccess(res))
+      dispatch(getBowlerDataSuccess(res));
     })
     .catch((err) => {
-      console.log(err)
-    })
-}
+      console.log(err);
+    });
+};

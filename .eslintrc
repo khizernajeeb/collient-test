@@ -2,13 +2,13 @@
   "parser": "babel-eslint",
   "extends": "airbnb",
   "rules": {
+    "space-before-function-paren": ["error", "never"],
     "jsx-quotes": ["error", "prefer-single"],
+    "implicit-arrow-linebreak": ["error", "below"],
     "no-underscore-dangle": 1,
-    "react/jsx-filename-extension": [
-      "error",
-      { "extensions": [".js", ".jsx"] }
-    ],
+    "react/jsx-filename-extension": ["error", { "extensions": [".js", ".jsx"] }],
     "linebreak-style": 0,
+
     "jsx-a11y/label-has-for": [
       2,
       {

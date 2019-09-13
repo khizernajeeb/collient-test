@@ -1,6 +1,6 @@
-import { connect } from 'react-redux'
-import BuildComponent from '../components/BuildHighlights/BuildComponent'
-import actions from '../redux/actions'
+import { connect } from 'react-redux';
+import BuildComponent from '../components/BuildHighlights/BuildComponent';
+import actions from '../redux/actions';
 
 const mapStateToProps = (state) => {
   return {
@@ -12,9 +12,8 @@ const mapStateToProps = (state) => {
     searchablePlayersInfoLoading: state.players.searchablePlayersInfoLoading,
     selectionInfo: state.players.selectionInfo,
     teamsInfo: state.players.teamsInfo,
-    playersInfo: state.players.playersInfo,
-  }
-}
+  };
+};
 
 const mapDispatchToProps = (dispatch) => ({
   getPlayersData: (formData) => dispatch(actions.getPlayersData(formData)),
@@ -25,11 +24,11 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(actions.getSearchableTeamsInfo(formData)),
   getSearchablePlayersInfo: (formData) =>
     dispatch(actions.getSearchablePlayersInfo(formData)),
-})
+});
 
 const BuildContainer = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(BuildComponent)
+)(BuildComponent);
 
-export default BuildContainer
+export default BuildContainer;

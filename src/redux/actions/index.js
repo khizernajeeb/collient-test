@@ -8,7 +8,10 @@ import {
   getSearchablePlayersInfo,
   getChooseCricketClips,
   getClipsInfo,
-} from './userActions'
+  getPublishedReelDetails,
+  addClipComment,
+  addRating,
+} from './userActions';
 
 export default {
   getUserDetail,
@@ -20,4 +23,7 @@ export default {
   getSearchablePlayersInfo,
   getChooseCricketClips,
   getClipsInfo,
-}
+  getPublishedReelDetails,
+  addClipComment,
+  addRating,
+};

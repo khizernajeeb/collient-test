@@ -1,12 +1,29 @@
-import React from 'react'
-import { Comment, List } from 'antd'
-const CommentList = ({ comments }) => (
-  <List
-    dataSource={comments}
-    header={comments.length + comments.length > 1 ? 'replies' : 'reply'}
-    itemLayout='horizontal'
-    renderItem={(props) => <Comment {...props} />}
-  />
-)
+import React from 'react';
+import { Comment, List } from 'antd';
+import Spinner from '../Spinner';
 
-export default CommentList
+class CommentList extends React.Component {
+  render() {
+    const { comments } = this.props;
+    return (
+      //reelDetailsLoading || chooseCricketClips === null
+      false ? (
+        <Spinner />
+      ) : (
+        <List
+          dataSource={comments}
+          itemLayout='horizontal'
+          renderItem={(props) => (
+            <Comment
+              author={props.commenter}
+              content={props.commenttext}
+              datetime={'on ' + props.commentdate + ' at ' + props.commenttime}
+            />
+          )}
+        />
+      )
+    );
+  }
+}
+
+export default CommentList;

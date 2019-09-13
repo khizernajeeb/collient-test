@@ -3,7 +3,7 @@
  * plus it allows to override any other option.
  *
  */
-const isEslintUse = (use) => {
+const isEslintUse = use => {
   return false;
   try {
     return use.loader.toString().indexOf('eslint-loader') !== -1;
@@ -12,7 +12,7 @@ const isEslintUse = (use) => {
   }
 };
 
-const isEslintRule = (rule) => {
+const isEslintRule = rule => {
   if (!rule) return false;
   if (!rule.use || !Array.isArray(rule.use)) return false;
 
@@ -20,9 +20,9 @@ const isEslintRule = (rule) => {
 };
 
 module.exports = (config, options = {}) => {
-  const rules = config.module.rules.map((rule) => {
+  const rules = config.module.rules.map(rule => {
     if (!isEslintRule(rule)) return rule;
-    const use = rule.use.map((item) => {
+    const use = rule.use.map(item => {
       if (!isEslintUse(item)) return item;
 
       return {

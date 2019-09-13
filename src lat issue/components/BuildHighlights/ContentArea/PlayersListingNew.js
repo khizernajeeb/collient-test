@@ -1,25 +1,25 @@
-import React, { Component } from 'react'
-import { BATSMAN, BOWLER, OUTCOMES, MATCHES } from '../../../configs/constants'
-import { Layout, Row, Spin } from 'antd'
-import AddOutcomes from './AddOutcomes'
-import BowlerListing from './BowlerListing'
-import { connect } from 'react-redux'
-import actions from '../../../redux/actions'
-import BatsmenListing from './BatsmenListing'
-import MatchesListing from './MatchesListing'
-import { baseFormData } from '../../../redux/sources/requestBody'
+import React, { Component } from 'react';
+import { BATSMAN, BOWLER, OUTCOMES, MATCHES } from '../../../configs/constants';
+import { Layout, Row, Spin } from 'antd';
+import AddOutcomes from './AddOutcomes';
+import BowlerListing from './BowlerListing';
+import { connect } from 'react-redux';
+import actions from '../../../redux/actions';
+import BatsmenListing from './BatsmenListing';
+import MatchesListing from './MatchesListing';
+import { baseFormData } from '../../../redux/sources/requestBody';
 
-import SelectionInfo from '../../BuildHighlights/selectionInfoComponent'
-import BuildNavigation from '../../Navigation/BuildNavigation'
+import SelectionInfo from '../../BuildHighlights/selectionInfoComponent';
+import BuildNavigation from '../../Navigation/BuildNavigation';
 
-var _ = require('lodash')
+var _ = require('lodash');
 
-const { Content } = Layout
+const { Content } = Layout;
 
 function filterPlayers(typePlayer, players) {
-  return players.filter((player) => {
-    return player.playerType === typePlayer.toLowerCase()
-  })
+  return players.filter(player => {
+    return player.playerType === typePlayer.toLowerCase();
+  });
 }
 
 // var data = {
@@ -43,9 +43,9 @@ function filterPlayers(typePlayer, players) {
 //   scopeType: 'SERIES',
 // }
 
-class PlayersListing extends Component {
+class ListingArea extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       players: null,
       eventName: BOWLER.toLowerCase(),
@@ -58,204 +58,195 @@ class PlayersListing extends Component {
       selectedKeys: [],
       selectedMatches: [],
       selectedOutcomes: [],
-    }
-    this.onclickMenu = this.onclickMenu.bind(this)
-    this.setSelectedPlayers = this.setSelectedPlayers.bind(this)
+    };
+    this.onclickMenu = this.onclickMenu.bind(this);
+    this.setSelectedPlayers = this.setSelectedPlayers.bind(this);
   }
 
-  componentWillReceiveProps = (updatedProps) => {
+  componentWillReceiveProps = updatedProps => {
     if (this.props.players !== updatedProps.players) {
       this.setState({
-        filteredPlayers: filterPlayers(
-          this.state.eventName,
-          updatedProps.players,
-        ),
-      })
+        filteredPlayers: filterPlayers(this.state.eventName, updatedProps.players),
+      });
     }
     if (this.props.playersInfo !== updatedProps.playersInfo) {
       this.setState({
         filteredPlayers: updatedProps.playersInfo.slice(),
-      })
+      });
     }
 
     if (this.props.selectionInfo !== updatedProps.selectionInfo) {
       this.setState({
         selectionInfo: updatedProps.selectionInfo,
-      })
+      });
     }
-  }
+  };
 
   getSelectionInfo = (selectedRows = null) => {
-    let formData = new FormData()
+    let formData = new FormData();
     for (let key in baseFormData) {
-      formData.append(key, baseFormData[key])
+      formData.append(key, baseFormData[key]);
     }
 
-    selectedRows.forEach((row) => {
+    selectedRows.forEach(row => {
       if (row.playerType === BATSMAN.toLowerCase()) {
-        formData.append('selectedBatsmanTeamIds', row.teamId)
-        formData.append('selectedBatsmanIds', row.playerId)
+        formData.append('selectedBatsmanTeamIds', row.teamId);
+        formData.append('selectedBatsmanIds', row.playerId);
       } else if (row.playerType === BOWLER.toLowerCase()) {
-        formData.append('selectedBowlerTeamIds', row.teamId)
-        formData.append('selectedBowlerIds', row.playerId)
+        formData.append('selectedBowlerTeamIds', row.teamId);
+        formData.append('selectedBowlerIds', row.playerId);
       } else if (row.outcomeKey) {
-        formData.append(row.outcomeKey, row.value)
+        formData.append(row.outcomeKey, row.value);
       } else if (row.matchId) {
-        formData.append('selectedMatchIds', row.matchId)
+        formData.append('selectedMatchIds', row.matchId);
       }
-    })
+    });
 
-    this.props.getSelectionInfo(formData)
+    this.props.getSelectionInfo(formData);
 
-    return formData
-  }
+    return formData;
+  };
 
   setSelectedPlayers = (eventName, selectedPlayers) => {
     if (selectedPlayers) {
-      let selectedRows
+      let selectedRows;
       if (this.state.eventName === 'bowler') {
         selectedRows = selectedPlayers
           .concat(this.state.selectedBatsmen)
           .concat(this.state.selectedBowlers)
-          .concat(this.state.selectedMatches)
+          .concat(this.state.selectedMatches);
 
         this.setState({
           selectedBowlers: selectedPlayers,
           selectedRows,
-        })
+        });
       } else if (this.state.eventName === 'batsman') {
         selectedRows = selectedPlayers
           .concat(this.state.selectedOutcomes)
           .concat(this.state.selectedMatches)
-          .concat(this.state.selectedBowlers)
+          .concat(this.state.selectedBowlers);
 
         this.setState({
           selectedBatsmen: selectedPlayers,
           selectedRows,
-        })
+        });
       } else if (this.state.eventName === 'outcomes') {
         selectedRows = selectedPlayers
           .concat(this.state.selectedBowlers)
           .concat(this.state.selectedBatsmen)
-          .concat(this.state.selectedMatches)
+          .concat(this.state.selectedMatches);
         this.setState({
           selectedOutcomes: selectedPlayers,
           selectedRows,
-        })
+        });
       } else if (this.state.eventName === 'matches') {
         selectedRows = selectedPlayers
           .concat(this.state.selectedBowlers)
           .concat(this.state.selectedBatsmen)
-          .concat(this.state.selectedOutcomes)
+          .concat(this.state.selectedOutcomes);
         this.setState({
           selectedMatches: selectedPlayers,
           selectedRows,
-        })
+        });
       }
-      this.getSelectionInfo(selectedRows)
+      this.getSelectionInfo(selectedRows);
     }
-  }
+  };
 
-  onclickMenu = (event) => {
-    let formData = new FormData()
+  onclickMenu = event => {
+    let formData = new FormData();
     for (let key in baseFormData) {
-      formData.append(key, baseFormData[key])
+      formData.append(key, baseFormData[key]);
     }
-    if (
-      this.state.selectedRows.length > 0 &&
-      event.key !== this.state.eventName
-    ) {
-      this.state.selectedRows.forEach((row) => {
+    if (this.state.selectedRows.length > 0 && event.key !== this.state.eventName) {
+      this.state.selectedRows.forEach(row => {
         if (row.playerType === BATSMAN.toLowerCase()) {
-          formData.append('selectedBatsmanTeamIds', row.teamId)
-          formData.append('selectedBatsmanIds', row.playerId)
+          formData.append('selectedBatsmanTeamIds', row.teamId);
+          formData.append('selectedBatsmanIds', row.playerId);
         } else if (row.playerType === BOWLER.toLowerCase()) {
-          formData.append('selectedBowlerTeamIds', row.teamId)
-          formData.append('selectedBowlerIds', row.playerId)
+          formData.append('selectedBowlerTeamIds', row.teamId);
+          formData.append('selectedBowlerIds', row.playerId);
         } else if (row.outcomeId) {
-          formData.append(row.outcomeKey, row.value)
+          formData.append(row.outcomeKey, row.value);
         } else if (row.matchId) {
-          formData.append('selectedMatchIds', row.matchId)
+          formData.append('selectedMatchIds', row.matchId);
         }
-      })
+      });
     }
 
     if (event.key === 'batsman' || event.key === 'bowler') {
-      formData.append('playerType', event.key)
-      this.props.getSearchablePlayersInfo(formData)
+      formData.append('playerType', event.key);
+      this.props.getSearchablePlayersInfo(formData);
     } else if (event.key === 'matches') {
-      this.props.getSearchableTeamsInfo(formData)
+      this.props.getSearchableTeamsInfo(formData);
     }
 
     this.setState({
       eventName: event.key,
-    })
-  }
+    });
+  };
 
   onSelectChange = (selectedKeys, selectedRows = null) => {
-    console.log('selectedKeys changed: ', selectedKeys, selectedRows)
+    console.log('selectedKeys changed: ', selectedKeys, selectedRows);
 
     this.setState(
       { selectedKeys },
 
       this.setSelectedPlayers(this.state.eventName, selectedRows),
-    )
-  }
+    );
+  };
 
-  addOutcomesOnChange = (checkedOutcomes) => {
-    let selectedOutcomes = []
+  addOutcomesOnChange = checkedOutcomes => {
+    let selectedOutcomes = [];
 
-    checkedOutcomes.slice().forEach((outcomeType) => {
-      let outcome = {}
+    checkedOutcomes.slice().forEach(outcomeType => {
+      let outcome = {};
 
-      console.log(outcomeType)
+      console.log(outcomeType);
 
       if (outcomeType === 'bowled') {
-        outcome['outcomeId'] = 1
-        outcome['outcomeKey'] = 'selectedWicketMethod'
-        outcome['value'] = 'b'
+        outcome['outcomeId'] = 1;
+        outcome['outcomeKey'] = 'selectedWicketMethod';
+        outcome['value'] = 'b';
       } else if (outcomeType === 'caught') {
-        outcome['outcomeId'] = 2
+        outcome['outcomeId'] = 2;
 
-        outcome['outcomeKey'] = 'selectedWicketMethod'
-        outcome['value'] = 'c'
+        outcome['outcomeKey'] = 'selectedWicketMethod';
+        outcome['value'] = 'c';
       } else if (outcomeType === '6runs') {
-        outcome['outcomeId'] = 3
+        outcome['outcomeId'] = 3;
 
-        outcome['outcomeKey'] = 'strikerRunsScored'
-        outcome['value'] = '6'
+        outcome['outcomeKey'] = 'strikerRunsScored';
+        outcome['value'] = '6';
       } else if (outcomeType === 'wide') {
-        outcome['outcomeId'] = 4
+        outcome['outcomeId'] = 4;
 
-        outcome['outcomeKey'] = 'deliveryTypes'
-        outcome['value'] = 'w'
+        outcome['outcomeKey'] = 'deliveryTypes';
+        outcome['value'] = 'w';
       }
-      selectedOutcomes.push(outcome)
-      selectedOutcomes = _.uniqBy(selectedOutcomes, 'outcomeId')
-    })
+      selectedOutcomes.push(outcome);
+      selectedOutcomes = _.uniqBy(selectedOutcomes, 'outcomeId');
+    });
 
-    this.setSelectedPlayers(this.state.eventName, selectedOutcomes)
+    this.setSelectedPlayers(this.state.eventName, selectedOutcomes);
     this.setState({
       selectedKeys: checkedOutcomes,
       selectedOutcomes,
-    })
-  }
+    });
+  };
 
   render() {
-    const { selectedKeys, selectedRows } = this.state
+    const { selectedKeys, selectedRows } = this.state;
     const rowSelection = {
       selectedKeys,
       selectedRows,
       onChange: this.onSelectChange,
-    }
+    };
 
-    console.log('NewPlayerRender', this.state, this.props)
+    console.log('NewPlayerRender', this.state, this.props);
     return (
       <div style={{ padding: '0px 0' }}>
-        <BuildNavigation
-          players={this.props.players}
-          click={this.onclickMenu}
-        />
+        <BuildNavigation players={this.props.players} click={this.onclickMenu} />
         <Content
           style={{
             padding: '25px 24px',
@@ -268,10 +259,7 @@ class PlayersListing extends Component {
             selectionInfo={this.state.selectionInfo}
           />
           {this.props.isLoading ? (
-            <Row
-              type='flex'
-              style={{ display: 'table', margin: '0px auto 20px' }}
-            >
+            <Row type='flex' style={{ display: 'table', margin: '0px auto 20px' }}>
               <Spin tip='Loading...' />
             </Row>
           ) : //  {this.props.players ? (
@@ -310,11 +298,11 @@ class PlayersListing extends Component {
           ) : null}
         </Content>
       </div>
-    )
+    );
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     selectionInfo: state.players.selectionInfo,
     selectionInfoLoading: state.players.selectionInfoLoading,
@@ -324,18 +312,16 @@ const mapStateToProps = (state) => {
 
     teamsInfo: state.players.teamsInfo,
     playersInfo: state.players.playersInfo,
-  }
-}
+  };
+};
 
-const mapDispatchToProps = (dispatch) => ({
-  getSelectionInfo: (formData) => dispatch(actions.getSelectionInfo(formData)),
-  getSearchableTeamsInfo: (formData) =>
-    dispatch(actions.getSearchableTeamsInfo(formData)),
-  getSearchablePlayersInfo: (formData) =>
-    dispatch(actions.getSearchablePlayersInfo(formData)),
-})
+const mapDispatchToProps = dispatch => ({
+  getSelectionInfo: formData => dispatch(actions.getSelectionInfo(formData)),
+  getSearchableTeamsInfo: formData => dispatch(actions.getSearchableTeamsInfo(formData)),
+  getSearchablePlayersInfo: formData => dispatch(actions.getSearchablePlayersInfo(formData)),
+});
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(PlayersListing)
+)(ListingArea);
