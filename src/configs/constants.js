@@ -18,12 +18,9 @@ export const bowlerTypes = [
   'Right-arm Leg-Spin',
   'Left-arm Orthodox',
 ];
-export const batsmenTypes = [
-  { type: 'L', value: 'Left Hand' },
-  { type: 'R', value: 'Right Hand' },
-];
+export const batsmenTypes = [{ type: 'L', value: 'Left Hand' }, { type: 'R', value: 'Right Hand' }];
 export const BROWSE_BY_TYPE = 'Browse By Type';
-export const BATSMAN = 'BATSMAN';
-export const BOWLER = 'BOWLER';
-export const OUTCOMES = 'OUTCOMES';
-export const MATCHES = 'MATCHES';
+export const BATSMAN = 'batsman';
+export const BOWLER = 'bowler';
+export const OUTCOMES = 'outcomes';
+export const MATCHES = 'matches';

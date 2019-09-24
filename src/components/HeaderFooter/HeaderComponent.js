@@ -7,7 +7,7 @@ import 'antd/dist/antd.css';
 const { Header } = Layout;
 
 const HeaderComponent = () => (
-  <Header style={{ height: '113px', paddingTop: '16px', paddingBottom: '16px' }}>
+  <Header id='header'>
     <img alt='logo' className='logo' src={logo} />
     <Navigation />
   </Header>

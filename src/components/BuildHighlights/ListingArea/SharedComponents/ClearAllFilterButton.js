@@ -5,10 +5,7 @@ class ClearAllFilterButton extends Component {
   render() {
     return (
       <>
-        <Button
-          style={{ margin: '0 0 10px' }}
-          onClick={this.props.clearAllFilters}
-        >
+        <Button style={{ margin: '0 0 10px' }} onClick={this.props.clearAllFilters}>
           Clear filters
         </Button>
         <Divider style={{ marginTop: '10px' }} />

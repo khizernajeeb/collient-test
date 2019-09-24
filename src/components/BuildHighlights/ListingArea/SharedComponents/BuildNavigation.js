@@ -2,7 +2,7 @@ import React from 'react';
 import { Menu } from 'antd';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-const BuildChildren = (props) => {
+const BuildChildren = props => {
   let disabledMenu = true;
   if (props.players.length > 0) {
     disabledMenu = false;
@@ -10,11 +10,7 @@ const BuildChildren = (props) => {
 
   return (
     <Router>
-      <Menu
-        onClick={props.click}
-        defaultSelectedKeys={['bowler']}
-        mode='horizontal'
-      >
+      <Menu onClick={props.click} defaultSelectedKeys={['bowler']} mode='horizontal' theme='dark'>
         <Menu.Item key='bowler'>Add Bowler</Menu.Item>
         <Menu.Item key='batsman' disabled={disabledMenu}>
           Add Batsman

@@ -4,8 +4,9 @@ import { Layout } from 'antd';
 const { Footer } = Layout;
 
 const FooterComponent = () => (
-  <Footer style={{ background: '#001529', color: '#fff', textAlign: 'center' }}>
-    Collient - Footer
+  <Footer className='footer'>
+    Collient, Inc. | <a href='mailto:info@collient.com'>info@collient.com</a> |{' '}
+    <a href='www.collient.com'>www.collient.com</a>
   </Footer>
 );
 

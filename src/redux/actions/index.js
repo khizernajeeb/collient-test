@@ -11,6 +11,9 @@ import {
   getPublishedReelDetails,
   addClipComment,
   addRating,
+  getStandardHighlights,
+  getMostViewedHighlights,
+  getTopRatedHighlights,
 } from './userActions';
 
 export default {
@@ -26,4 +29,7 @@ export default {
   getPublishedReelDetails,
   addClipComment,
   addRating,
+  getStandardHighlights,
+  getMostViewedHighlights,
+  getTopRatedHighlights,
 };

@@ -6,27 +6,22 @@ import {
   MOST_VIEWED,
   TOP_RATED,
 } from '../../../configs/routeNames';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 const PrimaryNavigationComponent = () => {
   return (
-    <Menu
-      theme='dark'
-      mode='horizontal'
-      defaultSelectedKeys={['1']}
-      style={{ lineHeight: '81px', fontSize: '15px' }}
-    >
+    <Menu className='menuHorizontal' theme='light' mode='horizontal' defaultSelectedKeys={['1']}>
       <Menu.Item key='1'>
         <Link to='/'>{BUILD_YOUR_OWN_HIGHLIGHTS}</Link>
       </Menu.Item>
       <Menu.Item key='2'>
-        <Link to='/'>{STANDARD_HIGHLIGHTS}</Link>
+        <NavLink to={STANDARD_HIGHLIGHTS}>Standard Highlights</NavLink>
       </Menu.Item>
       <Menu.Item key='3'>
-        <Link to='/'>{MOST_VIEWED}</Link>
+        <NavLink to={MOST_VIEWED}>Most Viewed</NavLink>
       </Menu.Item>
       <Menu.Item key='4'>
-        <Link to='/'>{TOP_RATED}</Link>
+        <NavLink to={TOP_RATED}>Top Rated</NavLink>
       </Menu.Item>
     </Menu>
   );

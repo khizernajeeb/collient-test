@@ -1,5 +1,5 @@
 export const allPlayersRequestBody = () => {
-  var formData = new FormData()
+  var formData = new FormData();
   var arr = {
     _selectedSeriesIds: 'on',
     _selectedPlayerSeriesId: 'on',
@@ -19,15 +19,15 @@ export const allPlayersRequestBody = () => {
     _selectedBatsmanTeamIds: 'on',
     scopeId: 7,
     _selectedBowlerTeamIds: 'on',
-  }
+  };
   for (let key in arr) {
-    formData.append(key, arr[key])
+    formData.append(key, arr[key]);
   }
-  return formData
-}
+  return formData;
+};
 
-export const playersTypeRequestBody = (playerType) => {
-  var formData = new FormData()
+export const playersTypeRequestBody = playerType => {
+  var formData = new FormData();
   var arr = {
     _selectedSeriesIds: 'on',
     _selectedPlayerSeriesId: 'on',
@@ -48,12 +48,12 @@ export const playersTypeRequestBody = (playerType) => {
     _selectedBatsmanTeamIds: 'on',
     scopeId: 7,
     _selectedBowlerTeamIds: 'on',
-  }
+  };
   for (let key in arr) {
-    formData.append(key, arr[key])
+    formData.append(key, arr[key]);
   }
-  return formData
-}
+  return formData;
+};
 
 export const baseFormData = {
   _selectedSeriesIds: 'on',
@@ -74,4 +74,4 @@ export const baseFormData = {
   scopeId: 7,
   _selectedBowlerTeamIds: 'on',
   scopeType: 'SERIES',
-}
+};

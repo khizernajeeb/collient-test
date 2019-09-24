@@ -3,20 +3,27 @@ import { BATSMAN, BOWLER, OUTCOMES, MATCHES } from '../../../configs/constants';
 import { Layout } from 'antd';
 import AddOutcomes from './AddOutcomes';
 import BowlerListing from './BowlerListing';
-import { connect } from 'react-redux';
-import actions from '../../../redux/actions';
 import BatsmenListing from './BatsmenListing';
 import MatchesListing from './MatchesListing';
 import { baseFormData } from '../../../redux/sources/requestBody';
-import SelectionInfo from '../SelectionInforArea/selectionInfoComponent';
 import BuildNavigation from './SharedComponents/BuildNavigation';
-
+import Spinner from '../../../shared/Spinner';
+import SelectionInfoContainer from '../../../containers/BuildHighlights/SelectionInfoContainer';
 const { Content } = Layout;
 
 function filterPlayers(typePlayer, players) {
   return players.filter(player => {
-    return player.playerType === typePlayer.toLowerCase();
+    return player.playerType === typePlayer;
   });
+}
+
+let formData;
+function updateFormData(form_data) {
+  formData = form_data;
+}
+
+function getFormData() {
+  return formData;
 }
 
 class ListingArea extends Component {
@@ -25,7 +32,6 @@ class ListingArea extends Component {
     this.state = {
       players: null,
       selectionInfo: null,
-
       selectedRowKeys: [],
       selectedMatches: [],
       selectedOutcomes: [],
@@ -35,43 +41,23 @@ class ListingArea extends Component {
       selectedBowlers: [],
       selectedBatsmen: [],
       selectedRows: [],
-      searchText: '',
-      eventName: BOWLER.toLowerCase(),
-      uniqueId: 0,
+      eventName: BOWLER,
     };
-    this.onclickMenu = this.onclickMenu.bind(this);
-    this.setSelectedPlayers = this.setSelectedPlayers.bind(this);
+    this.clickBuildHighlightsNavigation = this.clickBuildHighlightsNavigation.bind(this);
+    this.callSelectionInforApi = this.callSelectionInforApi.bind(this);
   }
 
   componentWillReceiveProps = updatedProps => {
-    if (this.props.players !== updatedProps.players) {
-      this.setState({
-        filteredPlayers: filterPlayers(this.state.eventName, updatedProps.players),
-      });
-    }
+    // if (this.props.players !== updatedProps.players) {
+    //   this.setState({
+    //     filteredPlayers: filterPlayers(this.state.eventName, updatedProps.players),
+    //   });
+    // }
     if (this.props.playersInfo !== updatedProps.playersInfo) {
       this.setState({
         filteredPlayers: updatedProps.playersInfo.slice(),
       });
     }
-
-    if (this.props.chooseCricketClips !== updatedProps.chooseCricketClips) {
-      this.props.getClipsInfo('?reelId=' + updatedProps.chooseCricketClips.reelId);
-      this.props.getPublishedReelDetails(
-        '?requestId=' + updatedProps.chooseCricketClips.publishedReelRequestId,
-      );
-      this.setState({
-        reelId: updatedProps.chooseCricketClips.reelId,
-        reelRequestId: updatedProps.chooseCricketClips.publishedReelRequestId,
-      });
-    }
-
-    if (this.props.clipsInfo !== updatedProps.clipsInfo) {
-      this.setState({
-        clipsInfo: updatedProps.clipsInfo,
-      });
-    }
-
     if (this.props.selectionInfo !== updatedProps.selectionInfo) {
       this.setState({
         selectionInfo: updatedProps.selectionInfo,
@@ -86,10 +72,10 @@ class ListingArea extends Component {
     }
 
     selectedRows.forEach(row => {
-      if (row.playerType === BATSMAN.toLowerCase()) {
+      if (row.playerType === BATSMAN) {
         formData.append('selectedBatsmanTeamIds', row.teamId);
         formData.append('selectedBatsmanIds', row.playerId);
-      } else if (row.playerType === BOWLER.toLowerCase()) {
+      } else if (row.playerType === BOWLER) {
         formData.append('selectedBowlerTeamIds', row.teamId);
         formData.append('selectedBowlerIds', row.playerId);
       } else if (row.outcomeKey) {
@@ -98,39 +84,34 @@ class ListingArea extends Component {
         formData.append('selectedMatchIds', row.matchId);
       }
     });
-
+    updateFormData(formData);
     this.props.getSelectionInfo(formData);
-
-    return formData;
   };
 
-  setSelectedPlayers = (eventName, selectedPlayers, selectedRowKeys) => {
+  callSelectionInforApi = (eventName, selectedPlayers, selectedRowKeys) => {
     if (selectedPlayers) {
       let selectedRows;
-      if (this.state.eventName === 'bowler') {
+      if (this.state.eventName === BOWLER) {
         selectedRows = selectedPlayers
           .concat(this.state.selectedBatsmen)
           .concat(this.state.selectedOutcomes)
           .concat(this.state.selectedMatches);
-
         this.setState({
           selectedBowlers: selectedPlayers,
           selectedRows,
           selectedRowKeys,
-          listRendered: true,
         });
-      } else if (this.state.eventName === 'batsman') {
+      } else if (this.state.eventName === BATSMAN) {
         selectedRows = selectedPlayers
           .concat(this.state.selectedOutcomes)
           .concat(this.state.selectedMatches)
           .concat(this.state.selectedBowlers);
-
         this.setState({
           selectedBatsmen: selectedPlayers,
           selectedRows,
           selectedRowKeys,
         });
-      } else if (this.state.eventName === 'outcomes') {
+      } else if (this.state.eventName === OUTCOMES) {
         selectedRows = selectedPlayers
           .concat(this.state.selectedBowlers)
           .concat(this.state.selectedBatsmen)
@@ -140,7 +121,7 @@ class ListingArea extends Component {
           selectedRows,
           selectedRowKeys,
         });
-      } else if (this.state.eventName === 'matches') {
+      } else if (this.state.eventName === MATCHES) {
         selectedRows = selectedPlayers
           .concat(this.state.selectedBowlers)
           .concat(this.state.selectedBatsmen)
@@ -155,19 +136,18 @@ class ListingArea extends Component {
     }
   };
 
-  onclickMenu = event => {
+  clickBuildHighlightsNavigation = event => {
+    event = event.key || event;
     let formData = new FormData();
     for (let key in baseFormData) {
       formData.append(key, baseFormData[key]);
     }
-    if (this.state.selectedRows.length > 0 && event.key !== this.state.eventName) {
+    if (this.state.selectedRows.length > 0 && event !== this.state.eventName) {
       this.state.selectedRows.forEach(row => {
-        if (row.playerType === BATSMAN.toLowerCase()) {
-          console.log('bats', BATSMAN.toLowerCase());
+        if (row.playerType === BATSMAN) {
           formData.append('selectedBatsmanTeamIds', row.teamId);
           formData.append('selectedBatsmanIds', row.playerId);
-        } else if (row.playerType === BOWLER.toLowerCase()) {
-          console.log('bowl', BOWLER.toLowerCase());
+        } else if (row.playerType === BOWLER) {
           formData.append('selectedBowlerTeamIds', row.teamId);
           formData.append('selectedBowlerIds', row.playerId);
         } else if (row.outcomeId) {
@@ -177,47 +157,25 @@ class ListingArea extends Component {
         }
       });
     }
-    let eventType = '';
-    switch (event.key) {
-      case BATSMAN.toLowerCase():
-        eventType = BATSMAN;
-        break;
-      case BOWLER.toLowerCase():
-        eventType = BOWLER;
-        break;
-      case OUTCOMES.toLowerCase():
-        eventType = OUTCOMES;
-        break;
-      case MATCHES.toLowerCase():
-        eventType = MATCHES;
-        break;
-      default:
-        break;
-    }
-    if (event.key === 'batsman' || event.key === 'bowler') {
-      formData.append('playerType', eventType.toLowerCase());
+    if (event === 'batsman' || event === 'bowler') {
+      formData.append('playerType', event);
       this.props.getSearchablePlayersInfo(formData);
-    } else if (event.key === 'matches') {
+    } else if (event === 'matches') {
       this.props.getSearchableTeamsInfo(formData);
     }
 
     this.setState({
-      eventName: eventType.toLowerCase(),
-      listRendered: false,
+      eventName: event,
     });
   };
 
-  onSelectChange = (selectedRowKeys, selectedRows = null) => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys, selectedRows);
-
-    //this.setState({ selectedRowKeys })
-
-    this.setSelectedPlayers(this.state.eventName, selectedRows, selectedRowKeys);
+  onChangeRowSelection = (selectedRowKeys, selectedRows = null) => {
+    console.log(selectedRowKeys, selectedRows);
+    this.callSelectionInforApi(this.state.eventName, selectedRows, selectedRowKeys);
   };
 
-  onChanges = checkedList => {
+  setSelectedOutcomes = checkedList => {
     let selectedOutcomes = [];
-
     checkedList.slice().forEach(outcomeType => {
       let outcome = {};
 
@@ -242,8 +200,6 @@ class ListingArea extends Component {
         checkedList = checkedList.filter(wicketType => wicketType !== 'anyWicket');
         selectedOutcomes = selectedOutcomes.filter(outcome => outcome.outcomeKey !== 'wicketFell');
       }
-
-      console.log(outcomeType);
 
       if (outcomeType === 'anyWicket') {
         outcome['outcomeKey'] = 'wicketFell';
@@ -298,10 +254,9 @@ class ListingArea extends Component {
         outcome['outcomeValue'] = 'noball';
       }
       selectedOutcomes.push(outcome);
-      //selectedOutcomes = _.uniqBy(selectedOutcomes, 'outcomeId')
     });
 
-    this.setSelectedPlayers(this.state.eventName, selectedOutcomes, this.state.selectedRowKeys);
+    this.callSelectionInforApi(this.state.eventName, selectedOutcomes, this.state.selectedRowKeys);
     this.setState({
       checkedList: checkedList,
       selectedOutcomes,
@@ -309,12 +264,21 @@ class ListingArea extends Component {
   };
 
   clearSelectedRowsKeys = () => {
-    this.setState({
-      selectedRows: [],
-      selectedRowKeys: [],
-      selectionInfo: null,
-      checkedList: [],
-    });
+    this.setState(
+      {
+        selectedRows: [],
+        selectedBowlers: [],
+        selectedBatsmen: [],
+        selectedOutcomes: [],
+        selectedMatches: [],
+        selectedRowKeys: [],
+        checkedList: [],
+        selectionInfo: null,
+      },
+      () => {
+        //this.clickBuildHighlightsNavigation(this.state.eventName);
+      },
+    );
   };
 
   render() {
@@ -322,36 +286,28 @@ class ListingArea extends Component {
     const rowSelection = {
       selectedRowKeys,
       selectedRows,
-      onChange: this.onSelectChange,
+      onChange: this.onChangeRowSelection,
     };
-
-    console.log('NewPlayerRender', this.state, this.props);
+    console.log('ListingArea', this.state, this.props);
     return (
       <div style={{ padding: '0px 0' }}>
-        <BuildNavigation players={this.props.players} click={this.onclickMenu} />
-        <Content
-          style={{
-            padding: '25px 24px',
-            margin: 0,
-            minHeight: 280,
-          }}
-        >
-          {this.state.selectionInfo ? (
-            <SelectionInfo
+        <BuildNavigation players={this.props.players} click={this.clickBuildHighlightsNavigation} />
+        <Content className='contentArea'>
+          {this.props.selectionInfoLoading ? (
+            <Spinner />
+          ) : this.state.selectionInfo ? (
+            <SelectionInfoContainer
+              formData={getFormData()}
               selectionInfoLoading={this.props.selectionInfoLoading}
               selectionInfo={this.state.selectionInfo}
-              reelRequestId={this.state.reelRequestId}
               selectedRows={this.state.selectedRows}
             />
           ) : null}
 
           {this.state.eventName === 'bowler' ? (
             <BowlerListing
-              eventName={this.props.eventName}
-              selectedBowlers={this.state.selectedBowlers}
-              setSelectedPlayers={this.setSelectedPlayers}
-              selectedRows={this.props.selectedRows}
-              players={this.state.filteredPlayers}
+              //players={this.state.filteredPlayers}
+              players={filterPlayers(this.state.eventName, this.props.players)}
               rowSelection={rowSelection}
               isLoading={this.props.isLoading}
               playersInfoLoading={this.props.searchablePlayersInfoLoading}
@@ -359,10 +315,6 @@ class ListingArea extends Component {
             />
           ) : this.state.eventName === 'batsman' ? (
             <BatsmenListing
-              eventName={this.props.eventName}
-              selectedBatsmen={this.state.selectedBatsmen}
-              setSelectedPlayers={this.setSelectedPlayers}
-              selectedRows={this.props.selectedRows}
               players={this.state.filteredPlayers}
               rowSelection={rowSelection}
               playersInfoLoading={this.props.searchablePlayersInfoLoading}
@@ -371,14 +323,11 @@ class ListingArea extends Component {
           ) : this.state.eventName === 'outcomes' ? (
             <AddOutcomes
               checkedList={this.state.checkedList}
-              rowSelection={this.onChanges}
+              rowSelection={this.setSelectedOutcomes}
               clearSelectedRowsKeys={this.clearSelectedRowsKeys}
             />
           ) : this.state.eventName === 'matches' ? (
             <MatchesListing
-              selectedBatsmen={this.state.selectedBatsmen}
-              setSelectedBatsmen={this.props.setSelectedBatsmen}
-              selectedRows={this.props.selectedRows}
               matches={this.props.teamsInfo}
               rowSelection={rowSelection}
               teamsInoLoading={this.props.searchableTeamsInfoLoading}
@@ -391,32 +340,4 @@ class ListingArea extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    selectionInfo: state.players.selectionInfo,
-    selectionInfoLoading: state.players.selectionInfoLoading,
-    searchableTeamsInfoLoading: state.players.searchableTeamsInfoLoading,
-    searchablePlayersInfoLoading: state.players.searchablePlayersInfoLoading,
-    teamsInfo: state.players.teamsInfo,
-    playersInfo: state.players.playersInfo,
-    chooseCricketClips: state.players.chooseCricketClips,
-    clipsInfo: state.players.clipsInfo,
-    reelDetails: state.players.reelDetails,
-    addClipComment: state.players.addClipComment,
-  };
-};
-
-const mapDispatchToProps = dispatch => ({
-  getSelectionInfo: formData => dispatch(actions.getSelectionInfo(formData)),
-  getSearchableTeamsInfo: formData => dispatch(actions.getSearchableTeamsInfo(formData)),
-  getSearchablePlayersInfo: formData => dispatch(actions.getSearchablePlayersInfo(formData)),
-  getChooseCricketClips: formData => dispatch(actions.getChooseCricketClips(formData)),
-  getClipsInfo: formData => dispatch(actions.getClipsInfo(formData)),
-  getPublishedReelDetails: formData => dispatch(actions.getPublishedReelDetails(formData)),
-  addClipComment: formData => dispatch(actions.addClipComment(formData)),
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ListingArea);
+export default ListingArea;

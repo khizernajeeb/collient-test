@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import ListingArea from './ListingArea/ListingArea';
 import { baseFormData } from '../../redux/sources/requestBody';
+import ListingAreaContainer from '../../containers/BuildHighlights/ListingAreaContainer';
 
 class BuildComponent extends Component {
   setFormData = () => {
@@ -17,12 +17,11 @@ class BuildComponent extends Component {
   }
 
   render() {
-    // console.log('renderMehtod', this.state, this.props, 'teams')
-
+    console.log('build component', this.state, this.props);
     return (
       <React.Fragment>
         {this.props.players ? (
-          <ListingArea isLoading={this.props.isLoading} players={this.props.players} />
+          <ListingAreaContainer isLoading={this.props.isLoading} players={this.props.players} />
         ) : null}
       </React.Fragment>
     );

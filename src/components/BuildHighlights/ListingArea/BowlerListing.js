@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Table, Button, Icon, Input } from 'antd';
-import Spinner from '../../SharedComponents/Spinner';
+import Spinner from '../../../shared/Spinner';
 import ClearAllFilterButton from './SharedComponents/ClearAllFilterButton';
 
 let clearInputFilter = Function;
@@ -8,7 +8,6 @@ let clearInputFilter = Function;
 class BowlerListing extends Component {
   state = {
     filteredInfo: null,
-    sortedInfo: null,
   };
 
   getColumnSearchProps = (dataIndex, name) => ({
@@ -78,11 +77,11 @@ class BowlerListing extends Component {
     }
   };
 
-  // setFilterValues = (pagination, filters, sorter) => {
-  //   this.setState({
-  //     filteredInfo: filters,
-  //   });
-  // };
+  setFilterValues = (pagination, filters, sorter) => {
+    this.setState({
+      filteredInfo: filters,
+    });
+  };
 
   render() {
     console.log('bowling', this.state, this.props);

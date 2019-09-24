@@ -11,6 +11,9 @@ import {
   addCommentURL,
   reelDetailsURL,
   addRatingURL,
+  standardHighlightsURL,
+  mostViewedHighlightsURL,
+  topRatedHighligtsURL,
 } from '../../configs/urls';
 import { playersTypeRequestBody } from './requestBody';
 
@@ -64,7 +67,11 @@ export const searchableTeamsInfoApi = formData =>
         if (response) {
           parseString(response.data, function(err, result) {
             result =
-              result.Teams.Team.length > 0 ? result.Teams.Team.map(value => value.Match.map(match => Object.assign(match.$, value.$))) : result;
+              result.Teams.Team.length > 0
+                ? result.Teams.Team.map(value =>
+                    value.Match.map(match => Object.assign(match.$, value.$)),
+                  )
+                : result;
             result = [].concat.apply([], result);
             result = _.uniqBy(result, 'matchId');
 
@@ -88,7 +95,10 @@ export const searchablePlayersInfoApi = formData =>
       .then(response => {
         if (response) {
           parseString(response.data, function(err, result) {
-            result = result.Players.Player.length > 0 ? result.Players.Player.map(value => value.$) : result;
+            result =
+              result.Players.Player.length > 0
+                ? result.Players.Player.map(value => value.$)
+                : result;
 
             resolve(result);
           });
@@ -163,7 +173,9 @@ export const addClipCommentApi = formData =>
       })
       .then(response => {
         if (response) {
-          resolve(response.data);
+          parseString(response.data, function(err, result) {
+            resolve(result);
+          });
         }
       })
       .catch(error => {
@@ -183,10 +195,8 @@ export const reelDetailsApi = formData =>
       .then(response => {
         if (response) {
           parseString(response.data, function(err, result) {
-            // resolve(_.sortBy(result, (o) => o.playerName))
             resolve(result);
           });
-          // resolve(response.data)
         }
       })
       .catch(error => {
@@ -208,7 +218,6 @@ export const addRatingApi = formData =>
             // resolve(_.sortBy(result, (o) => o.playerName))
             resolve(result);
           });
-          // resolve(response.data)
         }
       })
       .catch(error => {
@@ -216,6 +225,97 @@ export const addRatingApi = formData =>
       });
   });
 
+export const standardHighlightsApi = (formData, highlightType) =>
+  new Promise((resolve, reject) => {
+    console.log(new Date());
+    axios
+      .post(standardHighlightsURL + formData, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      })
+      .then(response => {
+        if (response) {
+          parseString(response.data, function(err, result) {
+            // result = result.StandardHighlights.Match.map(match => {
+            //   if (match.HighlightReel) {
+            //     return Object.assign(
+            //       match.HighlightReel.find(reel => {
+            //         //     if (reel.$.type === highlightType) {
+            //         return reel;
+            //         //  }
+            //         return reel;
+            //       }).Reel[0].$,
+            //       { highlightTitle: match.Title, reelType: match.HighlightReel },
+            //     );
+            //   }
+            //   return null;
+            // });
+
+            result = result.StandardHighlights.Match.map(match => {
+              if (match.HighlightReel) {
+                let objs = match.HighlightReel.map(reel => {
+                  return Object.assign({}, reel.$, reel.Reel[0].$, { highlightTitle: match.Title });
+                });
+                return Object.assign({}, objs);
+
+                //return Object.assign(mtch.HighlightReel;
+              }
+              return null;
+            });
+
+            result = _.compact([].concat.apply([], result));
+            resolve(result);
+          });
+        }
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+
+export const mostViewedHighlightApi = formData =>
+  new Promise((resolve, reject) => {
+    axios
+      .post(mostViewedHighlightsURL, formData, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      })
+      .then(response => {
+        if (response) {
+          parseString(response.data, function(err, result) {
+            result = result.Reels.Reel ? result.Reels.Reel.map(value => value.$) : null;
+            resolve(result);
+          });
+        }
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+
+export const topRatedHighlightsApi = formData =>
+  new Promise((resolve, reject) => {
+    axios
+      .post(topRatedHighligtsURL, formData, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      })
+      .then(response => {
+        if (response) {
+          parseString(response.data, function(err, result) {
+            result = result.Reels.Reel.map(value => value.$);
+            resolve(result);
+          });
+          // resolve(response.data)
+        }
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
 export const batsmenDataApi = () =>
   new Promise((resolve, reject) => {
     axios
