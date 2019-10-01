@@ -7,7 +7,7 @@ import ImageGallery from '../../shared/ImageGallery';
 import ModalContainer from '../../containers/SharedContainer/ModalContainer';
 
 const Content = Layout;
-
+let counter = 0;
 let reelsCount = 10;
 let seriedId = 7;
 let sortType = 'ALL_TIME';
@@ -21,6 +21,7 @@ class TopRated extends Component {
 
   componentDidMount() {
     this.callTopRatedHighlights(sortType, reelsCount);
+    console.log(++counter);
   }
 
   callTopRatedHighlights = (sortType, reelsCount) => {
@@ -42,8 +43,23 @@ class TopRated extends Component {
     this.callTopRatedHighlights(sortType, reelsCount);
   };
 
+  showModal = (publishedReelId, reelId) => {
+    this.setState({
+      publishedReelId,
+      reelId,
+      visible: true,
+    });
+  };
+
+  closeModal = () => {
+    this.setState({ visible: false });
+    this.callTopRatedHighlights(sortType, reelsCount);
+  };
+
   render() {
     console.log('top rated', this.state, this.props);
+    console.log('rend', ++counter);
+
     return (
       <React.Fragment>
         <Divider style={{ margin: '0' }} />
@@ -68,13 +84,12 @@ class TopRated extends Component {
             </Col>
             <Divider />
           </Row>
-          {this.props.topRatedHighlightsLoading ? (
-            <Spinner />
-          ) : this.props.topRatedHighlights ? (
+          {this.props.topRatedHighlightsLoading && <Spinner />}
+          {this.props.topRatedHighlights && (
             <ImageGallery showModal={this.showModal} highlights={this.props.topRatedHighlights} />
-          ) : null}
+          )}
         </Content>
-        {this.state.visible ? (
+        {this.state.visible && (
           <ModalContainer
             closeModal={this.closeModal}
             formData={this.props.formData}
@@ -82,7 +97,7 @@ class TopRated extends Component {
             publishedReelId={this.state.publishedReelId}
             reelId={this.state.reelId}
           />
-        ) : null}
+        )}
       </React.Fragment>
     );
   }

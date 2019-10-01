@@ -9,8 +9,10 @@ import { baseFormData } from '../../../redux/sources/requestBody';
 import BuildNavigation from './SharedComponents/BuildNavigation';
 import Spinner from '../../../shared/Spinner';
 import SelectionInfoContainer from '../../../containers/BuildHighlights/SelectionInfoContainer';
+
 const { Content } = Layout;
 
+// filter players bases on player type
 function filterPlayers(typePlayer, players) {
   return players.filter(player => {
     return player.playerType === typePlayer;
@@ -22,6 +24,7 @@ function updateFormData(form_data) {
   formData = form_data;
 }
 
+// to get updated form data
 function getFormData() {
   return formData;
 }
@@ -44,15 +47,10 @@ class ListingArea extends Component {
       eventName: BOWLER,
     };
     this.clickBuildHighlightsNavigation = this.clickBuildHighlightsNavigation.bind(this);
-    this.callSelectionInforApi = this.callSelectionInforApi.bind(this);
+    this.setStateOfSelectedRows = this.setStateOfSelectedRows.bind(this);
   }
 
   componentWillReceiveProps = updatedProps => {
-    // if (this.props.players !== updatedProps.players) {
-    //   this.setState({
-    //     filteredPlayers: filterPlayers(this.state.eventName, updatedProps.players),
-    //   });
-    // }
     if (this.props.playersInfo !== updatedProps.playersInfo) {
       this.setState({
         filteredPlayers: updatedProps.playersInfo.slice(),
@@ -65,6 +63,7 @@ class ListingArea extends Component {
     }
   };
 
+  // to call selection info API
   getSelectionInfo = (selectedRows = null) => {
     let formData = new FormData();
     for (let key in baseFormData) {
@@ -88,7 +87,8 @@ class ListingArea extends Component {
     this.props.getSelectionInfo(formData);
   };
 
-  callSelectionInforApi = (eventName, selectedPlayers, selectedRowKeys) => {
+  // to concatenate all selected bowlers, batsman, matches, outcomes
+  setStateOfSelectedRows = (eventName, selectedPlayers, selectedRowKeys) => {
     if (selectedPlayers) {
       let selectedRows;
       if (this.state.eventName === BOWLER) {
@@ -136,12 +136,15 @@ class ListingArea extends Component {
     }
   };
 
+  // click on build highlights child navigation item
   clickBuildHighlightsNavigation = event => {
     event = event.key || event;
     let formData = new FormData();
     for (let key in baseFormData) {
       formData.append(key, baseFormData[key]);
     }
+
+    // add selected rows in form data object
     if (this.state.selectedRows.length > 0 && event !== this.state.eventName) {
       this.state.selectedRows.forEach(row => {
         if (row.playerType === BATSMAN) {
@@ -157,6 +160,8 @@ class ListingArea extends Component {
         }
       });
     }
+
+    // call players or teams info API bases on selected page
     if (event === 'batsman' || event === 'bowler') {
       formData.append('playerType', event);
       this.props.getSearchablePlayersInfo(formData);
@@ -164,16 +169,18 @@ class ListingArea extends Component {
       this.props.getSearchableTeamsInfo(formData);
     }
 
+    // set the event to current page
     this.setState({
       eventName: event,
     });
   };
 
+  // perform action on row selection
   onChangeRowSelection = (selectedRowKeys, selectedRows = null) => {
-    console.log(selectedRowKeys, selectedRows);
-    this.callSelectionInforApi(this.state.eventName, selectedRows, selectedRowKeys);
+    this.setStateOfSelectedRows(this.state.eventName, selectedRows, selectedRowKeys);
   };
 
+  // set selected outcomes for Add Outcomes page
   setSelectedOutcomes = checkedList => {
     let selectedOutcomes = [];
     checkedList.slice().forEach(outcomeType => {
@@ -256,29 +263,25 @@ class ListingArea extends Component {
       selectedOutcomes.push(outcome);
     });
 
-    this.callSelectionInforApi(this.state.eventName, selectedOutcomes, this.state.selectedRowKeys);
+    this.setStateOfSelectedRows(this.state.eventName, selectedOutcomes, this.state.selectedRowKeys);
     this.setState({
       checkedList: checkedList,
       selectedOutcomes,
     });
   };
 
+  // to clear all selected rows
   clearSelectedRowsKeys = () => {
-    this.setState(
-      {
-        selectedRows: [],
-        selectedBowlers: [],
-        selectedBatsmen: [],
-        selectedOutcomes: [],
-        selectedMatches: [],
-        selectedRowKeys: [],
-        checkedList: [],
-        selectionInfo: null,
-      },
-      () => {
-        //this.clickBuildHighlightsNavigation(this.state.eventName);
-      },
-    );
+    this.setState({
+      selectedRows: [],
+      selectedBowlers: [],
+      selectedBatsmen: [],
+      selectedOutcomes: [],
+      selectedMatches: [],
+      selectedRowKeys: [],
+      checkedList: [],
+      selectionInfo: null,
+    });
   };
 
   render() {
@@ -298,42 +301,42 @@ class ListingArea extends Component {
           ) : this.state.selectionInfo ? (
             <SelectionInfoContainer
               formData={getFormData()}
-              selectionInfoLoading={this.props.selectionInfoLoading}
               selectionInfo={this.state.selectionInfo}
-              selectedRows={this.state.selectedRows}
             />
           ) : null}
 
-          {this.state.eventName === 'bowler' ? (
+          {this.state.eventName === 'bowler' && (
             <BowlerListing
-              //players={this.state.filteredPlayers}
               players={filterPlayers(this.state.eventName, this.props.players)}
               rowSelection={rowSelection}
               isLoading={this.props.isLoading}
               playersInfoLoading={this.props.searchablePlayersInfoLoading}
               clearSelectedRowsKeys={this.clearSelectedRowsKeys}
             />
-          ) : this.state.eventName === 'batsman' ? (
+          )}
+          {this.state.eventName === 'batsman' && (
             <BatsmenListing
               players={this.state.filteredPlayers}
               rowSelection={rowSelection}
               playersInfoLoading={this.props.searchablePlayersInfoLoading}
               clearSelectedRowsKeys={this.clearSelectedRowsKeys}
             />
-          ) : this.state.eventName === 'outcomes' ? (
+          )}
+          {this.state.eventName === 'outcomes' && (
             <AddOutcomes
               checkedList={this.state.checkedList}
               rowSelection={this.setSelectedOutcomes}
               clearSelectedRowsKeys={this.clearSelectedRowsKeys}
             />
-          ) : this.state.eventName === 'matches' ? (
+          )}
+          {this.state.eventName === 'matches' && (
             <MatchesListing
               matches={this.props.teamsInfo}
               rowSelection={rowSelection}
               teamsInoLoading={this.props.searchableTeamsInfoLoading}
               clearSelectedRowsKeys={this.clearSelectedRowsKeys}
             />
-          ) : null}
+          )}
         </Content>
       </div>
     );

@@ -20,9 +20,9 @@ class BuildComponent extends Component {
     console.log('build component', this.state, this.props);
     return (
       <React.Fragment>
-        {this.props.players ? (
+        {this.props.players && (
           <ListingAreaContainer isLoading={this.props.isLoading} players={this.props.players} />
-        ) : null}
+        )}
       </React.Fragment>
     );
   }

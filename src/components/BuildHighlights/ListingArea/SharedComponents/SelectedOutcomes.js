@@ -4,10 +4,8 @@ class SelectedOutcomes extends Component {
   render() {
     let selectedOutcomes;
     let { checkedList } = this.props;
-    console.log('check', checkedList);
     checkedList.slice().forEach(outcomeType => {
       let outcome = {};
-
       if (checkedList[checkedList.length - 1] === 'anyWicket') {
         checkedList = checkedList.filter(
           wicketType =>
@@ -84,8 +82,6 @@ class SelectedOutcomes extends Component {
       }
       selectedOutcomes.push(outcome);
     });
-
-    console.log('sele', selectedOutcomes);
 
     return selectedOutcomes;
   }

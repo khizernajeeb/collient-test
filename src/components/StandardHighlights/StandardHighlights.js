@@ -23,6 +23,7 @@ class StandardHighlights extends Component {
     visible: false,
     highlightType: 4,
   };
+
   componentDidMount() {
     this.callStandardHighlightsApi(seriedId);
   }
@@ -77,7 +78,6 @@ class StandardHighlights extends Component {
     let a = standardHighlights.map((element, index) => {
       return element[highlightType];
     });
-    console.log('AA', a);
     return a;
   };
   render() {
@@ -100,9 +100,8 @@ class StandardHighlights extends Component {
 
             <Divider />
           </Row>
-          {this.props.standardHighlightsLoading ? (
-            <Spinner />
-          ) : this.props.standardHighlights ? (
+          {this.props.standardHighlightsLoading && <Spinner />}
+          {this.props.standardHighlights && (
             <ImageGallery
               showModal={this.showModal}
               highlights={this.filterStandardHighlights(
@@ -110,9 +109,9 @@ class StandardHighlights extends Component {
                 this.state.highlightType,
               )}
             />
-          ) : null}
+          )}
         </Content>
-        {this.state.visible ? (
+        {this.state.visible && (
           <ModalContainer
             closeModal={this.closeModal}
             formData={this.props.formData}
@@ -121,7 +120,7 @@ class StandardHighlights extends Component {
             reelId={this.state.reelId}
             reloadHighlightsPage={this.reloadHighlightsPage}
           />
-        ) : null}
+        )}
       </React.Fragment>
     );
   }

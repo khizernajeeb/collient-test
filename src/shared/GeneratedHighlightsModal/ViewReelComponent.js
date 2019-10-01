@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import actions from '../../redux/actions';
+
 import { Row, Col, Icon } from 'antd';
 import { Player } from 'video-react';
 import sampleVideo from '../../assets/sampleVideo.mp4';
@@ -19,6 +18,8 @@ class ViewReelComponent extends Component {
       thumbDown = thumbUp = null;
     }
   };
+
+  // set video reel rating
   setRating = thumbType => {
     let formData = new FormData();
     formData.append('thumb', thumbType);
@@ -30,14 +31,15 @@ class ViewReelComponent extends Component {
     }
   };
 
-  setThumbsUpDown = getRating => {
-    thumbDown = getRating ? getRating.publishedreel.rating[0].noOfthumbdown : null;
-    thumbUp = getRating ? getRating.publishedreel.rating[0].noOfthumbup : null;
-  };
+  // setThumbsUpDown = getRating => {
+  //   thumbDown = getRating ? getRating.publishedreel.rating[0].noOfthumbdown : null;
+  //   thumbUp = getRating ? getRating.publishedreel.rating[0].noOfthumbup : null;
+  // };
 
   render() {
+    console.log('Playerss', this.player);
     if (this.player) {
-      this.props.setVideoPlayerObject(this.player);
+      // this.props.setVideoPlayerObject(this.player);
     }
     console.log('viewReel', this.state, this.props, this.player);
     return (
@@ -48,6 +50,8 @@ class ViewReelComponent extends Component {
           width={'100%'}
           ref={player => {
             this.player = player;
+            this.props.setVideoPlayerObject(this.player);
+            console.log('sdfsdfjsdf', this.player);
           }}
         >
           <source src={sampleVideo} />
@@ -89,17 +93,4 @@ class ViewReelComponent extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    getRating: state.addRating.getRating,
-  };
-};
-
-const mapDispatchToProps = dispatch => ({
-  addRating: formData => dispatch(actions.addRating(formData)),
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ViewReelComponent);
+export default ViewReelComponent;

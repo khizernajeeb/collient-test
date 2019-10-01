@@ -94,7 +94,7 @@ class MatchesListing extends Component {
         ...this.getColumnSearchProps('matchName', 'Match Name'),
       },
       {
-        title: 'Browse By Team',
+        title: 'Team Name',
         dataIndex: 'teamName',
         filters: [
           { text: 'Mumbai Indians', value: 'Mumbai Indians' },

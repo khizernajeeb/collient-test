@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Table, Button, Icon, Input } from 'antd';
 import Spinner from '../../../shared/Spinner';
 import ClearAllFilterButton from './SharedComponents/ClearAllFilterButton';
@@ -10,6 +10,7 @@ class BowlerListing extends Component {
     filteredInfo: null,
   };
 
+  // to search player or match name
   getColumnSearchProps = (dataIndex, name) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
       <div style={{ padding: 8 }}>
@@ -55,16 +56,19 @@ class BowlerListing extends Component {
     },
   });
 
+  // input search filter
   handleSearch = (selectedKeys, confirm) => {
     confirm();
     this.setState({ searchText: selectedKeys[0] });
   };
 
+  // reset input search filter
   handleReset = clearFilters => {
     clearFilters();
     this.setState({ searchText: '' });
   };
 
+  // to clear all the selected filters -> players, filters, teams
   clearAllFilters = () => {
     if (this.state.searchText) {
       clearInputFilter();
@@ -77,6 +81,7 @@ class BowlerListing extends Component {
     }
   };
 
+  // set all filters
   setFilterValues = (pagination, filters, sorter) => {
     this.setState({
       filteredInfo: filters,
@@ -88,6 +93,7 @@ class BowlerListing extends Component {
     let { filteredInfo } = this.state;
     filteredInfo = filteredInfo || {};
 
+    // columns object that will render on this page
     const bowlerColumns = [
       {
         title: 'Player Name',
@@ -163,9 +169,8 @@ class BowlerListing extends Component {
     return this.props.playersInfoLoading || this.props.isLoading ? (
       <Spinner />
     ) : (
-      <>
+      <Fragment>
         <ClearAllFilterButton clearAllFilters={this.clearAllFilters} />
-
         <Table
           onChange={this.setFilterValues}
           rowSelection={this.props.rowSelection}
@@ -176,7 +181,7 @@ class BowlerListing extends Component {
             return record.__uniqueId;
           }}
         />
-      </>
+      </Fragment>
     );
   }
 }

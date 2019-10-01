@@ -1,9 +1,14 @@
+/*
+ * Build Your Own Highlights page child Navigation
+ */
+
 import React from 'react';
 import { Menu } from 'antd';
 import { BrowserRouter as Router } from 'react-router-dom';
 
+// disabled child navigation till Api not getting the data
+let disabledMenu = true;
 const BuildChildren = props => {
-  let disabledMenu = true;
   if (props.players.length > 0) {
     disabledMenu = false;
   }
@@ -13,7 +18,7 @@ const BuildChildren = props => {
       <Menu onClick={props.click} defaultSelectedKeys={['bowler']} mode='horizontal' theme='dark'>
         <Menu.Item key='bowler'>Add Bowler</Menu.Item>
         <Menu.Item key='batsman' disabled={disabledMenu}>
-          Add Batsman
+          Add Batsmen
         </Menu.Item>
         <Menu.Item key='outcomes' disabled={disabledMenu}>
           Add Outcomes

@@ -1,5 +1,4 @@
-import React from 'react';
-import 'antd/dist/antd.css';
+import React, { Fragment } from 'react';
 import { Row, Col, Typography, Checkbox, Divider } from 'antd';
 import ClearAllFilterButton from './SharedComponents/ClearAllFilterButton';
 
@@ -14,7 +13,7 @@ class AddOutcomes extends React.Component {
   render() {
     console.log('outcome', this.state, this.props);
     return (
-      <>
+      <Fragment>
         <ClearAllFilterButton clearAllFilters={this.clearAllFilters} />
         <Checkbox.Group
           style={{ width: '100%' }}
@@ -85,7 +84,7 @@ class AddOutcomes extends React.Component {
             </Col>
           </Row>
         </Checkbox.Group>
-      </>
+      </Fragment>
     );
   }
 }

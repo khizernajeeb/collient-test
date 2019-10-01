@@ -30,7 +30,7 @@ class CommentChild extends Component {
           <FormItem>
             {getFieldDecorator('name', {
               rules: [{ required: true, message: 'Please enter your name' }],
-            })(<Input onChange={onChangeTitle} placeholder='Enter name' />)}
+            })(<Input onChange={onChangeTitle} placeholder='Enter Name' />)}
           </FormItem>
           <FormItem>
             {getFieldDecorator('comment', {

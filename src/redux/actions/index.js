@@ -14,7 +14,7 @@ import {
   getStandardHighlights,
   getMostViewedHighlights,
   getTopRatedHighlights,
-} from './userActions';
+} from './actions';
 
 export default {
   getUserDetail,

@@ -227,7 +227,6 @@ export const addRatingApi = formData =>
 
 export const standardHighlightsApi = (formData, highlightType) =>
   new Promise((resolve, reject) => {
-    console.log(new Date());
     axios
       .post(standardHighlightsURL + formData, {
         headers: {
@@ -306,7 +305,7 @@ export const topRatedHighlightsApi = formData =>
       .then(response => {
         if (response) {
           parseString(response.data, function(err, result) {
-            result = result.Reels.Reel.map(value => value.$);
+            result = result.Reels.Reel ? result.Reels.Reel.map(value => value.$) : null;
             resolve(result);
           });
           // resolve(response.data)

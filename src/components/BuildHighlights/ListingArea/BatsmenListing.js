@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Table, Button, Icon, Input } from 'antd';
 import Spinner from '../../../shared/Spinner';
 import ClearAllFilterButton from './SharedComponents/ClearAllFilterButton';
@@ -10,6 +10,7 @@ class BatsmenListing extends Component {
     filteredInfo: null,
   };
 
+  // to search player or match name
   getColumnSearchProps = (dataIndex, name) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
       <div style={{ padding: 8 }}>
@@ -55,16 +56,19 @@ class BatsmenListing extends Component {
     },
   });
 
+  // input search filter
   handleSearch = (selectedKeys, confirm) => {
     confirm();
     this.setState({ searchText: selectedKeys[0] });
   };
 
+  // reset input search filter
   handleReset = clearFilters => {
     clearFilters();
     this.setState({ searchText: '' });
   };
 
+  // to clear all the selected filters -> players, filters, teams
   clearAllFilters = () => {
     if (this.state.searchText) {
       clearInputFilter();
@@ -77,6 +81,7 @@ class BatsmenListing extends Component {
     }
   };
 
+  // set all filters
   setFilterValues = (pagination, filters, sorter) => {
     this.setState({
       filteredInfo: filters,
@@ -127,21 +132,19 @@ class BatsmenListing extends Component {
     return this.props.playersInfoLoading ? (
       <Spinner />
     ) : (
-      <>
-        {' '}
+      <Fragment>
         <ClearAllFilterButton clearAllFilters={this.clearAllFilters} />
         <Table
           onChange={this.setFilterValues}
           rowSelection={this.props.rowSelection}
           columns={batsmenColumns}
           dataSource={this.props.players}
-          // rowKey={`playerId`}
           rowKey={record => {
             if (!record.__uniqueId) record.__uniqueId = record.playerType + '_' + record.playerId;
             return record.__uniqueId;
           }}
         />
-      </>
+      </Fragment>
     );
   }
 }

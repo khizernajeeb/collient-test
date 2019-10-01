@@ -81,13 +81,12 @@ class MostViewed extends Component {
             </Col>
             <Divider />
           </Row>
-          {this.props.mostViewedHighlightsLoading ? (
-            <Spinner />
-          ) : this.props.mostViewedHighlights ? (
+          {this.props.mostViewedHighlightsLoading && <Spinner />}
+          {this.props.mostViewedHighlights && (
             <ImageGallery showModal={this.showModal} highlights={this.props.mostViewedHighlights} />
-          ) : null}
+          )}
         </Content>
-        {this.state.visible ? (
+        {this.state.visible && (
           <ModalContainer
             closeModal={this.closeModal}
             formData={this.props.formData}
@@ -95,7 +94,7 @@ class MostViewed extends Component {
             publishedReelId={this.state.publishedReelId}
             reelId={this.state.reelId}
           />
-        ) : null}
+        )}
       </React.Fragment>
     );
   }

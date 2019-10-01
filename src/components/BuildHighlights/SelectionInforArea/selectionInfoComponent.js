@@ -7,12 +7,14 @@ class SelectionInfo extends Component {
     visible: false,
   };
 
+  // to show modal page
   showModal = () => {
     this.setState({
       visible: true,
     });
   };
 
+  // to close modal page
   closeModal = () => {
     this.setState({ visible: false });
   };
@@ -21,36 +23,34 @@ class SelectionInfo extends Component {
     console.log('selectionInfo', this.state, this.props, this.props.formData);
     return (
       <div style={{ margin: '0px auto' }}>
-        {true ? (
-          <div>
-            <Row type='flex' align='middle'>
-              <Col span={20}>{this.props.selectionInfo.description}</Col>
-              <Col span={4}>
-                <Button
-                  disabled={this.props.selectionInfo.numClips < 1}
-                  type='primary'
-                  size={'large'}
-                  onClick={this.showModal}
-                  style={{ height: '50px' }}
-                >
-                  <Badge
-                    className='highlightsBadge'
-                    count={this.props.selectionInfo.numClips}
-                    overflowCount={999}
-                  />
-                  View Highlightss
-                </Button>
-              </Col>
-            </Row>
-          </div>
-        ) : null}
-        {this.state.visible ? (
+        <div>
+          <Row type='flex' align='middle'>
+            <Col span={20}>{this.props.selectionInfo.description}</Col>
+            <Col span={4}>
+              <Button
+                disabled={this.props.selectionInfo.numClips < 1}
+                type='primary'
+                size={'large'}
+                onClick={this.showModal}
+                style={{ height: '50px' }}
+              >
+                <Badge
+                  className='highlightsBadge'
+                  count={this.props.selectionInfo.numClips}
+                  overflowCount={999}
+                />
+                View Highlights
+              </Button>
+            </Col>
+          </Row>
+        </div>
+        {this.state.visible && (
           <ModalContainer
             closeModal={this.closeModal}
             formData={this.props.formData}
             visible={this.state.visible}
           />
-        ) : null}
+        )}
       </div>
     );
   }
